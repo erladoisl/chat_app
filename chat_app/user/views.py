@@ -45,3 +45,10 @@ def search_user(request: Request) -> Response:
     users = User.objects.filter(
         username__contains=request.query_params.get('query'))
     return Response(UserSerializer(instance=users, many=True).data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def status(request: Request) -> Response:
+    user = UserSerializer(instance=request.user)
+    return Response(user.data)

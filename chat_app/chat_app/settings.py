@@ -26,8 +26,14 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000'
+]
 
+# allows cookies to be sent cross site
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
