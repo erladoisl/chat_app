@@ -7,6 +7,8 @@ import { checkStatus, logout, selectIsLoggedIn, selectIsLoading } from './reduce
 
 import LoginPage from './components/Login/LoginPage';
 import MainPage from './components/Main/MainPage';
+import ChatPage from './components/Chat/ChatPage';
+
 
 import './App.css';
 
@@ -44,7 +46,8 @@ function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route exact path="/login" element={<LoginPage />} />
-					<Route exact path="/" element={<MainPage/>} />
+					<Route exact path="/" element={<MainPage />} />
+					<Route exact path="/chat/:chatUuid" element={<ChatPage />} />
 				</Routes>
 			</BrowserRouter>
 		</>

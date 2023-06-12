@@ -11,6 +11,7 @@ logger = getLogger('chat_serializers')
 
 class MessageSerializer(serializers.ModelSerializer):
     recieved = serializers.SerializerMethodField('is_reciever')
+    sender = serializers.SerializerMethodField('get_sender')
 
     def is_reciever(self, obj):
         """
@@ -24,9 +25,12 @@ class MessageSerializer(serializers.ModelSerializer):
             logger.exception('Request not passed to context')
             raise APIException()
 
+    def get_sender(self, obj):
+        return obj.sender.username
+        
     class Meta:
         model = Message
-        fields = ('uuid', 'created_at', 'text', 'read', 'recieved')
+        fields = ('uuid', 'created_at', 'text', 'read', 'recieved', 'sender')
 
 
 class ChatSerializer(serializers.ModelSerializer):

@@ -18,10 +18,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
          
 
     @database_sync_to_async
-    def create_message(self, text, sender):
+    def create_message(self, text, sender, uuid):
         print('create_message')
         return Message.objects.create(text=text, sender=sender,
-                                          chat=self.chat)
+                                          chat=self.chat, uuid=uuid)
 
     async def connect(self):
         print('connect')
@@ -57,9 +57,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print('receive')
         sender = self.scope['user']
         payload = json.loads(text_data)
-        message = payload.get('message')
+        text = payload.get('text')
+        uuid = payload.get('uuid')
 
-        if not message or message.isspace():
+        if not text or text.isspace():
             await self.send(json.dumps({
                 'type': 'error',
                 'data': {'message': 'Please enter a message'}
@@ -67,13 +68,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             try:
                 # create message then send to channel group
-                msg_obj = await self.create_message(message, sender)
+                msg_obj = await self.create_message(text, sender, uuid)
 
                 await self.channel_layer.group_send(
                     self.room_name,
                     {
                         'type': 'chat_recieved',
-                        'message': message,
+                        'text': text,
                         'uuid': str(msg_obj.uuid),
                         'sender_channel_name': self.channel_name,
                     }
@@ -94,7 +95,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(json.dumps({
                 'type': 'chat_message',
                 'data': {
-                    'message': event['message'],
+                    'text': event['text'],
                     'uuid': event['uuid'],
                     'recieved': True
                 }

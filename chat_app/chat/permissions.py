@@ -18,9 +18,9 @@ class HasChatPermissions(permissions.BasePermission):
         try:
             # try and get the chat uuid with the current user
             chat_uuid = view.kwargs.get('chat_uuid')
-            Chat.objects.get(uuid=chat_uuid, users_in=[request.user])
+            chat = Chat.objects.get(uuid=chat_uuid)
 
-            return True
+            return request.user in chat.users.all()
         except Chat.DoesNotExist:
             logger.warning(
                 f'Chat access permission denied for user {request.user}')
