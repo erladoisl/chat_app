@@ -5,7 +5,7 @@ import {Form, Button, Spinner} from 'react-bootstrap';
 
 import './LoginPage.css';
 
-import {login, selectAuthError, selectIsLoggedIn, selectIsLoading} from '../reducers/userSlice';
+import {login, selectAuthError, selectIsLoggedIn, selectIsLoading} from '../../reducers/userSlice';
 
 function LoginPage() {
 	const dispatch = useDispatch();

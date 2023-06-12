@@ -12,7 +12,9 @@ class MessageListView(ListAPIView):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        return Message.objects.filter(chat__uuid=self.kwargs['chat_uuid']).order_by('-created_at')
+        messages = Message.objects.filter(chat__uuid=self.kwargs['chat_uuid']).order_by('-created_at')
+        
+        return messages
 
 
 class ChatListCreateView(ListCreateAPIView):
