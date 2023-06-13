@@ -24,7 +24,7 @@ function App() {
 			{!isLoading && isLoggedIn && (
 				<Navbar className='position-relative m-4'>
 					<Nav className='position-absolute end-0'>
-						<Nav.Link href="#" onClick={() => dispatch(logout())}>
+						<Nav.Link href="#" onClick={() => dispatch(logout())} title='Выйти'>
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<g clipPath="url(#clip0_1_4872)">
 									<path d="M15.6356 0.599609H0.599968V23.4002H15.6356V0.599609Z" stroke="black" strokeWidth="1.2" strokeMiterlimit="6.2" strokeLinecap="round" strokeLinejoin="round" />
