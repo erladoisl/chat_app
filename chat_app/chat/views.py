@@ -1,4 +1,6 @@
 from rest_framework.generics import ListAPIView, ListCreateAPIView, DestroyAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .permissions import HasChatPermissions
@@ -16,6 +18,29 @@ class MessageListView(ListAPIView):
         
         return messages
 
+class ChatView(APIView):
+    permission_classes = [IsAuthenticated]
+     
+    def get(self, request, chat_uuid):
+        try:
+            chat = Chat.objects.get(uuid=chat_uuid)
+            context = {
+                'type': 'chat',
+                'uuid': chat.uuid,
+                'name': chat.name,
+                'users': [user.uuid for user in chat.users.all()]
+            }
+        except Chat.DoesNotExist:
+            context = {
+                'type': 'error',
+                    'data': {
+                        'message': f'Chat {chat_uuid} does not exist'
+                    }
+            }
+        finally:
+            return Response(data=context)
+    
+        
 
 class ChatListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]

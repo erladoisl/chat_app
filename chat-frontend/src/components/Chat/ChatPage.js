@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, useParams } from 'react-router-dom';
-import { Form, Button, Card, Spinner } from 'react-bootstrap';
+import { Form, Button, Card, Spinner, ListGroup } from 'react-bootstrap';
 import { v4 as uuid } from 'uuid';
 
 import { API_HOST } from '../../globals';
@@ -12,10 +12,10 @@ import {
 	loadMessage,
 	selectChatLoading,
 	selectChatError,
+	getChat,
+	selectChat,
 	setError
 } from '../../reducers/chatSlice';
-
-import './ChatPage.css';
 
 function ChatPage() {
 	const dispatch = useCallback(useDispatch(), []);
@@ -27,6 +27,7 @@ function ChatPage() {
 	const messages = useSelector(selectMessages);
 	const chatLoading = useSelector(selectChatLoading);
 	const chatError = useSelector(selectChatError);
+	const selectedChat = useSelector(selectChat);
 
 	const ws = useRef(null);
 	const [newMsg, setNewMsg] = useState('');
@@ -48,7 +49,7 @@ function ChatPage() {
 
 		// load previous chat messages
 		dispatch(fetchMessages(chatUuid));
-
+		dispatch(getChat(chatUuid))
 		return () => ws.current.close();
 	}, [chatUuid, dispatch]);
 
@@ -73,27 +74,74 @@ function ChatPage() {
 	};
 
 	return (
-		<div className="ChatPage">
-			<div className="msgCont">
-				<div className="msgBox">
-					<div className="msgDisplay">
-						{chatLoading ? (
-							<Spinner animation="grow" />
-						) : (
-							messages.map((message) => (
-								<Card
-									key={message.uuid}
-									className={`mt-3 ${!message.recieved && 'ml-auto'} ${message.sender === user.username && 'align-self-end'}`}
-									body
-									style={{ overflowWrap: 'anywhere' }}
-									bg={message.recieved ? 'light' : 'primary'}
-									text={message.recieved ? 'dark' : 'light'}>
-									{message.sender}
-									{message.text}
-								</Card>
-							))
-						)}
-					</div>
+		<div className="container">
+			<div className="row">
+				<Card className="col col-8 m-auto p-0">
+					<ListGroup variant="flush">
+						<ListGroup.Item>
+							{selectedChat && (
+								<div className='text-center'>
+									<div className='row'>
+										<div className='text-center col'>
+											<div>
+												{selectedChat.name}
+											</div>
+											<a title='Посмотреть всех участников' className="link-secondary" href={`/chat/participants/${selectedChat.uuid}`}>
+												{selectedChat.users.length} {'участник' + (selectedChat.users.length === 1 ? '' : [2, 3, 4].includes(selectedChat.users.length) ? 'a' : 'ов')}
+											</a>
+										</div>
+										<div className='col col-1 p-3'>
+											<a href={`/`} title='Назад'>
+												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<g clipPath="url(#clip0_1_4872)">
+														<path d="M15.6356 0.599609H0.599968V23.4002H15.6356V0.599609Z" stroke="black" strokeWidth="1.2" strokeMiterlimit="6.2" strokeLinecap="round" strokeLinejoin="round" />
+														<path d="M23.3914 12.0004H6.28087" stroke="black" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+														<path d="M6.28086 12.0004L11.3203 16.9312" stroke="black" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+														<path d="M6.28086 12.0004L11.3203 7.06958" stroke="black" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+													</g>
+													<defs>
+														<clipPath id="clip0_1_4872">
+															<rect width="24" height="24" fill="white" />
+														</clipPath>
+													</defs>
+												</svg>
+											</a>
+										</div>
+									</div>
+								</div>
+
+							)}
+						</ListGroup.Item>
+					</ListGroup>
+					<ListGroup variant="flush " className='container' style={{ height: '500px', display: 'flex', flexDirection: 'column-reverse', alignItems: 'flex-start', overflowY: 'scroll' }}>
+						<div className="row row-cols-1 flex-column-reverse">
+							{chatLoading ? (
+								<Spinner animation="grow" />
+							) : (
+								messages.map((message) => (
+									<Card
+										key={message.uuid}
+										className='border-0'
+										body
+										style={{ overflowWrap: 'anywhere' }}
+										text={message.recieved ? 'dark' : 'light'}
+									>
+										<div className='row'>
+											<div className={`col-auto rounded text-break ${message.sender === user.username ? 'bg-primary align-self-end' : 'bg-light'}`}>
+												{message.sender !== user.username && <div className='row px-2 fw-bold fs-6'>
+													{message.sender}
+												</div>
+												}
+												<div className='row px-2 fs-5'>
+													{message.text}
+												</div>
+											</div>
+										</div>
+									</Card>
+								))
+							)}
+						</div>
+					</ListGroup>
 
 					<Form onSubmit={sendNewMsg}>
 						<div className='container'>
@@ -105,6 +153,8 @@ function ChatPage() {
 											rows="3"
 											style={{ resize: 'none' }}
 											value={newMsg}
+											placeholder='Сообщение...'
+											className='border-0'
 											onKeyDown={onKeyDown}
 											onChange={e => setNewMsg(e.target.value)}
 										/>
@@ -127,7 +177,7 @@ function ChatPage() {
 							</div>
 						</div>
 					</Form>
-				</div>
+				</Card>
 				{chatError && (
 					<p className="mt-3" style={{ color: 'red' }}>
 						{chatError}

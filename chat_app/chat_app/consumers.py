@@ -15,13 +15,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except:
             print('error while getting chat by id ', chat_uuid)
             raise Chat.DoesNotExist
-         
 
     @database_sync_to_async
     def create_message(self, text, sender, uuid):
         print('create_message')
         return Message.objects.create(text=text, sender=sender,
-                                          chat=self.chat, uuid=uuid)
+                                      chat=self.chat, uuid=uuid)
 
     async def connect(self):
         print('connect')
@@ -30,8 +29,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             user = self.scope['user']
             chat_uuid = self.scope['url_route']['kwargs'].get('chat_id')
-            print('chat_uuid', chat_uuid)
-            
+
             try:
                 # authenticate user with chat
                 self.chat = await self.get_chat(chat_uuid, user)
@@ -69,13 +67,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             try:
                 # create message then send to channel group
                 msg_obj = await self.create_message(text, sender, uuid)
-
                 await self.channel_layer.group_send(
                     self.room_name,
                     {
                         'type': 'chat_recieved',
                         'text': text,
                         'uuid': str(msg_obj.uuid),
+                        'sender': sender,
                         'sender_channel_name': self.channel_name,
                     }
                 )
@@ -97,6 +95,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'data': {
                     'text': event['text'],
                     'uuid': event['uuid'],
-                    'recieved': True
+                    'recieved': True,
+                    'sender': event['sender'].username
                 }
             }))
