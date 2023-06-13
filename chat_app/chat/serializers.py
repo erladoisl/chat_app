@@ -12,7 +12,11 @@ logger = getLogger('chat_serializers')
 class MessageSerializer(serializers.ModelSerializer):
     recieved = serializers.SerializerMethodField('is_reciever')
     sender = serializers.SerializerMethodField('get_sender')
+    created_at = serializers.SerializerMethodField('get_created_at')
 
+    def get_created_at(self, obj):
+        return obj.created_at.isoformat()
+        
     def is_reciever(self, obj):
         """
         Returns true if this chat message was recieved by the user getting the 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, useParams } from 'react-router-dom';
 import { Form, Button, Card, Spinner, ListGroup } from 'react-bootstrap';
 import { v4 as uuid } from 'uuid';
-
+import dateFormat from "dateformat";
 import { API_HOST } from '../../globals';
 import { selectUser, selectIsLoading } from '../../reducers/userSlice';
 import {
@@ -112,8 +112,8 @@ function ChatPage() {
 					</ListGroup>
 					<div variant="flush " className='container' style={{ height: '500px', display: 'flex', flexDirection: 'column-reverse', alignItems: 'flex-start', overflowY: 'scroll' }}>
 						<div className="row flex-column-reverse" style={{ width: '100%' }}>
-							{messages.map((message) => (
-								<div className={`m-2 col-auto rounded ${message.sender === user.username ? 'bg-primary align-self-end text-light' : 'ms-4 align-self-start bg-light'}`}>
+							{messages.map((message, index) => (
+								<div key={index} className={`m-2 col-auto rounded ${message.sender === user.username ? 'bg-primary align-self-end text-light' : 'ms-4 align-self-start bg-light'}`}>
 									<div className='row'>
 										<div className='col'>
 											{message.sender !== user.username && <div className='row px-2 fw-bold fs-6'>
@@ -122,6 +122,19 @@ function ChatPage() {
 											}
 											<div className='row px-2 fs-5'>
 												{message.text}
+											</div>
+											<div className='row px-2 fs-6 justify-content-md-end'>
+												<div className='col-auto p-0' style={{fontSize: '15px'}}>
+													{dateFormat((message.created_at ? new Date(message.created_at) : new Date()), "dd.mm.yy hh:MM")}
+												</div>
+												{message.sender === user.username && (
+													<div className='col-1 ps-1 text-light'>
+														<svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path d="M11.7931 1.00035L4.63338 8.87886L1.142 5.53954" stroke="#acc0c2" strokeLinecap="round" strokeLinejoin="round" />
+															<path d="M16.7401 1.00006L9.57997 8.87898L6.98385 6.42009" stroke="#EF5DA8" strokeLinecap="round" strokeLinejoin="round" />
+														</svg>
+													</div>
+												)}
 											</div>
 										</div>
 									</div>
