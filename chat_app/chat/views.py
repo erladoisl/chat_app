@@ -7,6 +7,7 @@ from .permissions import HasChatPermissions
 from .serializers import MessageSerializer, ChatSerializer
 
 from .models import Message, Chat
+from user.models import User
 
 
 class MessageListView(ListAPIView):
@@ -34,7 +35,7 @@ class ChatView(APIView):
                 'type': 'chat',
                 'uuid': chat.uuid,
                 'name': chat.name,
-                'users': [user.uuid for user in chat.users.all()]
+                'users': [{'value': user.uuid, 'label': user.username} for user in chat.users.all()]
             }
         except Chat.DoesNotExist:
             context = {
@@ -46,8 +47,26 @@ class ChatView(APIView):
         finally:
             return Response(data=context)
     
-       
+    def put(self, request, chat_uuid):
+        participants = request.data.get('participants', [])
+        chat = Chat.objects.get(uuid=chat_uuid)
+        users = []
 
+        for participant in participants:
+            users.append(User.objects.get(uuid=participant['value']))
+        
+        chat.users.set(users)
+        chat.save()
+        
+        context = {
+            'type': 'chat',
+            'uuid': chat.uuid,
+            'name': chat.name,
+            'users': [{'value': user.uuid, 'label': user.username} for user in chat.users.all()]
+        }
+        return Response(data=context)
+        
+       
 class ChatListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ChatSerializer

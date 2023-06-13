@@ -4,8 +4,9 @@ from rest_framework.request import Request
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import login, logout, authenticate
+from rest_framework.generics import ListCreateAPIView
 
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import UserSerializer, UsersSerializer, LoginSerializer
 from .models import User
 
 
@@ -52,3 +53,10 @@ def search_user(request: Request) -> Response:
 def status(request: Request) -> Response:
     user = UserSerializer(instance=request.user)
     return Response(user.data)
+
+class UserListCreateView(ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UsersSerializer
+
+    def get_queryset(self):
+        return User.objects.all()

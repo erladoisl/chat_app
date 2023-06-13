@@ -28,3 +28,11 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=128)
     password = serializers.CharField(max_length=128)
+
+class UsersSerializer(serializers.ModelSerializer):    
+    value = serializers.CharField(source='uuid')
+    label = serializers.CharField(source='username')
+    
+    class Meta:
+        model = User
+        fields = ('value', 'label')

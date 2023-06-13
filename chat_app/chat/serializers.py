@@ -3,7 +3,6 @@ from rest_framework.exceptions import APIException
 from logging import getLogger
 
 from .models import Message, Chat
-from user.serializers import UserSerializer
 
 
 logger = getLogger('chat_serializers')
@@ -47,7 +46,7 @@ class ChatSerializer(serializers.ModelSerializer):
         try:
             users = []
             for user in obj.users.all():
-                users.append(UserSerializer(user).data)
+                users.append({'value': user.uuid, 'label': user.username})
 
             return users
         except KeyError:

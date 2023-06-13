@@ -9,11 +9,15 @@ export const chatSlice = createSlice({
 		loading: false,
 		error: null,
 		chats: [],
+		users: [],
 	},
 	reducers: {
 		loadMessages: (state, action) => {
 			state.messages = [...action.payload, ...state.messages];
 			state.loading = false;
+		},
+		loadUsers: (state, action) => {
+			state.users = [...action.payload];
 		},
 		loadMessage: (state, action) => {
 			state.messages = [action.payload, ...state.messages];
@@ -49,6 +53,7 @@ export const chatSlice = createSlice({
 export const {
 	loadMessages,
 	loadMessage,
+	loadUsers,
 	clearMessages,
 	loadChats,
 	setError,
@@ -63,6 +68,7 @@ export const selectChatLoading = state => state.chat.loading;
 export const selectChatError = state => state.chat.error;
 export const selectChats = state => state.chat.chats;
 export const selectChat = state => state.chat.selectedChat;
+export const selectUsers = state => state.chat.users;
 
 export const fetchMessages = chat_uuid => dispatch => {
 	dispatch(setLoading(true));
@@ -70,6 +76,15 @@ export const fetchMessages = chat_uuid => dispatch => {
 		.get(`/chat/${chat_uuid}/messages/`)
 		.then(res => {
 			dispatch(loadMessages(res.data));
+		})
+		.catch(err => dispatch(setError(err.response.data.detail)));
+};
+
+export const getUsers = () => dispatch => {
+	instance
+		.get(`/auth/users/`)
+		.then(res => {
+			dispatch(loadUsers(res.data))
 		})
 		.catch(err => dispatch(setError(err.response.data.detail)));
 };
@@ -99,6 +114,19 @@ export const getChats = () => dispatch => {
 		});
 };
 
+export const updateChatParticipants = (chat_uuid, participants) => dispatch => {
+	dispatch(setLoading(true));
+	instance
+		.put(`/chat/${chat_uuid}`, { participants })
+		.then(res => dispatch(setSelectedChat(res.data)))
+		.catch(err => {
+			if (err.response) {
+				dispatch(setError(err.response.data.detail));
+			} else {
+				dispatch(setError('Error updatinging chats participants'));
+			}
+		});
+};
 export const createChat = (name, navigate) => dispatch => {
 	dispatch(setLoading(true));
 	instance

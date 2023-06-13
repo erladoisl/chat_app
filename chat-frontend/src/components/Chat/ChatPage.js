@@ -16,6 +16,7 @@ import {
 	selectChat,
 	setError
 } from '../../reducers/chatSlice';
+import Participants from "./Participants/Participants";
 
 function ChatPage() {
 	const dispatch = useCallback(useDispatch(), []);
@@ -85,9 +86,9 @@ function ChatPage() {
 										<div>
 											{selectedChat.name}
 										</div>
-										<a title='Посмотреть всех участников' className="link-secondary" href={`/chat/participants/${selectedChat.uuid}`}>
+										<div className='fw-light'>
 											{selectedChat.users.length} {'участник' + (selectedChat.users.length === 1 ? '' : [2, 3, 4].includes(selectedChat.users.length) ? 'a' : 'ов')}
-										</a>
+										</div>
 									</div>
 									<div className='col col-1 p-3'>
 										<a href={`/`} title='Назад'>
@@ -106,6 +107,7 @@ function ChatPage() {
 											</svg>
 										</a>
 									</div>
+									<Participants participants={selectedChat.users} chat_uuid={selectedChat.uuid} />
 								</div>
 							)}
 						</ListGroup.Item>
@@ -124,14 +126,14 @@ function ChatPage() {
 												{message.text}
 											</div>
 											<div className='row px-2 fs-6 justify-content-md-end'>
-												<div className='col-auto p-0' style={{fontSize: '15px'}}>
+												<div className='col-auto p-0' style={{ fontSize: '15px' }}>
 													{dateFormat((message.created_at ? new Date(message.created_at) : new Date()), "dd.mm.yy hh:MM")}
 												</div>
 												{message.sender === user.username && (
 													<div className='col-1 ps-1 text-light'>
 														<svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-															<path d="M11.7931 1.00035L4.63338 8.87886L1.142 5.53954" stroke={message.read ? "#EF5DA8": "#acc0c2"} strokeLinecap="round" strokeLinejoin="round" />
-															<path d="M16.7401 1.00006L9.57997 8.87898L6.98385 6.42009" stroke={message.read ? "#EF5DA8": "#acc0c2"} strokeLinecap="round" strokeLinejoin="round" />
+															<path d="M11.7931 1.00035L4.63338 8.87886L1.142 5.53954" stroke={message.read ? "#EF5DA8" : "#acc0c2"} strokeLinecap="round" strokeLinejoin="round" />
+															<path d="M16.7401 1.00006L9.57997 8.87898L6.98385 6.42009" stroke={message.read ? "#EF5DA8" : "#acc0c2"} strokeLinecap="round" strokeLinejoin="round" />
 														</svg>
 													</div>
 												)}
