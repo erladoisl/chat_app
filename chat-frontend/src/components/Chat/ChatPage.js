@@ -130,8 +130,8 @@ function ChatPage() {
 												{message.sender === user.username && (
 													<div className='col-1 ps-1 text-light'>
 														<svg width="18" height="10" viewBox="0 0 18 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-															<path d="M11.7931 1.00035L4.63338 8.87886L1.142 5.53954" stroke="#acc0c2" strokeLinecap="round" strokeLinejoin="round" />
-															<path d="M16.7401 1.00006L9.57997 8.87898L6.98385 6.42009" stroke="#EF5DA8" strokeLinecap="round" strokeLinejoin="round" />
+															<path d="M11.7931 1.00035L4.63338 8.87886L1.142 5.53954" stroke={message.recieved ? "#EF5DA8": "#acc0c2"} strokeLinecap="round" strokeLinejoin="round" />
+															<path d="M16.7401 1.00006L9.57997 8.87898L6.98385 6.42009" stroke={message.recieved ? "#EF5DA8": "#acc0c2"} strokeLinecap="round" strokeLinejoin="round" />
 														</svg>
 													</div>
 												)}
