@@ -28,11 +28,9 @@ export const chatSlice = createSlice({
 			state.loading = false;
 		},
 		filterChat: (state, action) => {
-			console.log('state.chats', state.chats)
 			state.chats = state.chats.filter(chat => chat.uuid !== action.payload);
 		},
 		setSelectedChat: (state, action) => {
-			console.log('action.payload', action.payload)
 			state.selectedChat = action.payload
 			state.loading = false;
 		},
