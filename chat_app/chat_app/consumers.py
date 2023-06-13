@@ -21,6 +21,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             raise Chat.DoesNotExist
 
     @database_sync_to_async
+    def mark_message_as_read(self, uuid):
+        logging.info(f'Start to mark message as read by uuid{uuid}')
+
+        message = Message.objects.get(uuid=uuid)
+        message.read = True
+        message.save()
+
+        return message
+
+    @database_sync_to_async
     def create_message(self, text, sender, uuid):
         logging.info(f'create_message "{text}" by s{sender}')
 
@@ -114,6 +124,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if self.channel_name != event['sender_channel_name']:
             logging.info(
                 f"Sending message {event['text']} by {event['sender'].username}")
+
+            await self.mark_message_as_read(event['uuid'])
 
             await self.send(json.dumps({
                 'type': 'chat_message',

@@ -15,6 +15,12 @@ class MessageListView(ListAPIView):
 
     def get_queryset(self):
         messages = Message.objects.filter(chat__uuid=self.kwargs['chat_uuid']).order_by('-created_at')
+        cur_user_uuid = self.request.user.uuid
+        
+        for message in messages:
+            if not message.read and message.sender.uuid != cur_user_uuid:
+                message.read = True
+                message.save()
         
         return messages
 
@@ -40,7 +46,7 @@ class ChatView(APIView):
         finally:
             return Response(data=context)
     
-        
+       
 
 class ChatListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
