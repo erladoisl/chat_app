@@ -92,7 +92,7 @@ export const getUsers = () => dispatch => {
 export const getChat = chat_uuid => dispatch => {
 	dispatch(setLoading(true));
 	instance
-		.get(`/chat/${chat_uuid}`)
+		.get(`/chat/${chat_uuid}/`)
 		.then(res => {
 			dispatch(setSelectedChat(res.data))
 		})
@@ -117,7 +117,7 @@ export const getChats = () => dispatch => {
 export const updateChatParticipants = (chat_uuid, participants) => dispatch => {
 	dispatch(setLoading(true));
 	instance
-		.put(`/chat/${chat_uuid}`, { participants })
+		.put(`/chat/${chat_uuid}/`, { participants })
 		.then(res => dispatch(setSelectedChat(res.data)))
 		.catch(err => {
 			if (err.response) {
@@ -134,7 +134,7 @@ export const createChat = (name, navigate) => dispatch => {
 		.then(res => {
 			const chat_uuid = res.data.uuid;
 			dispatch(setLoading(false));
-			navigate(`/chat/${chat_uuid}`);
+			navigate(`/chat/${chat_uuid}/`);
 		})
 		.catch(err => {
 			console.log(err)
