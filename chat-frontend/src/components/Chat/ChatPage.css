@@ -1,0 +1,18 @@
+.msgIconTailRight {
+    position: relative;
+    bottom: 8px;
+    left: 132px;
+}
+.msgIconTailLeft {
+    position: relative;
+    bottom: 8px;
+    right: 21px;
+}
+
+.msgIcon {
+    background-color: #F2F2F7!important;
+}
+
+.msgIconSelf {
+    background-color: #5D5FEF!important;
+}

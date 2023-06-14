@@ -17,6 +17,7 @@ import {
 	setError
 } from '../../reducers/chatSlice';
 import Participants from "./Participants/Participants";
+import './ChatPage.css'
 
 function ChatPage() {
 	const dispatch = useCallback(useDispatch(), []);
@@ -26,7 +27,6 @@ function ChatPage() {
 	const userLoading = useSelector(selectIsLoading);
 
 	const messages = useSelector(selectMessages);
-	const chatLoading = useSelector(selectChatLoading);
 	const chatError = useSelector(selectChatError);
 	const selectedChat = useSelector(selectChat);
 
@@ -83,7 +83,7 @@ function ChatPage() {
 							{selectedChat && (
 								<div className='row'>
 									<div className='text-center col'>
-										<div>
+										<div className='fw-bold'>
 											{selectedChat.name}
 										</div>
 										<div className='fw-light'>
@@ -94,7 +94,6 @@ function ChatPage() {
 										<a href={`/`} title='Назад'>
 											<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 												<g clipPath="url(#clip0_1_4872)">
-													<path d="M15.6356 0.599609H0.599968V23.4002H15.6356V0.599609Z" stroke="black" strokeWidth="1.2" strokeMiterlimit="6.2" strokeLinecap="round" strokeLinejoin="round" />
 													<path d="M23.3914 12.0004H6.28087" stroke="black" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
 													<path d="M6.28086 12.0004L11.3203 16.9312" stroke="black" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
 													<path d="M6.28086 12.0004L11.3203 7.06958" stroke="black" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -115,7 +114,16 @@ function ChatPage() {
 					<div variant="flush " className='container' style={{ height: '500px', display: 'flex', flexDirection: 'column-reverse', alignItems: 'flex-start', overflowY: 'scroll' }}>
 						<div className="row flex-column-reverse" style={{ width: '100%' }}>
 							{messages.map((message, index) => (
-								<div key={index} className={`m-2 col-auto rounded ${message.sender === user.username ? 'bg-primary align-self-end text-light' : 'ms-4 align-self-start bg-light'}`}>
+								<div key={index} className={`m-2 col-auto rounded-bottom ${message.sender === user.username ? 'msgIconSelf align-self-end text-light rounded-start' : 'ms-4 align-self-start msgIcon rounded-end'}`}>
+									{message.sender === user.username ?
+										<svg className='msgIconTailRight' width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M1 0C1 0 6.73794 0 8.2 0C9.66205 0 9.99997 1.5 8.64997 3C7.29997 4.5 1.49937 9.5 1 11C0.500641 12.5 1 0 1 0Z" fill="#5D5FEF" />
+										</svg>
+										:
+										<svg className='msgIconTailLeft' width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path stroke='' d="M9.00003 0C9.00003 0 3.26209 0 1.80004 0C0.33798 0 6.19888e-05 1.5 1.35006 3C2.70006 4.5 8.50066 9.5 9.00003 11C9.49939 12.5 9.00003 0 9.00003 0Z" fill="#F2F2F7" />
+										</svg>
+									}
 									<div className='row'>
 										<div className='col'>
 											{message.sender !== user.username && <div className='row px-2 fw-bold fs-6'>
@@ -163,7 +171,7 @@ function ChatPage() {
 											/>
 										</Form.Group>
 									</div>
-									<div className='col-1'>
+									<div className='col-1 p-1'>
 										<Button type="submit" className='btn btn-link'>
 											<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 												<g clipPath="url(#clip0_1_3574)">
