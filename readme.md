@@ -4,6 +4,7 @@ This is an app for messaging between multiple users. Implemented based on Django
 
 # Requirements
 python 3.9.16
+node v17.4.0
 
 # Runing server part
 Run from __chat_app__ folder:
